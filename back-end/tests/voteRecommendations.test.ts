@@ -95,4 +95,22 @@ describe("POST /recommendations/:id/downvote", () => {
     });
     expect(recommendationAfter.score).toBe(-1);
   });
+
+  it("given valid id, recommendation should be excluded if score < 5", async () => {
+    const body = generateNewRecommendationBody();
+    const recommendation = await prisma.recommendation.create({
+      data: {
+        name: body.name,
+        youtubeLink: body.youtubeLink,
+        score: -5,
+      },
+    });
+    await agent.post(`/recommendations/${recommendation.id}/downvote`);
+    const recommendationAfter = await prisma.recommendation.findUnique({
+      where: {
+        id: recommendation.id,
+      },
+    });
+    expect(recommendationAfter).toBe(undefined);
+  });
 });
