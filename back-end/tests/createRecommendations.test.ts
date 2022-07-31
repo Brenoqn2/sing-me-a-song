@@ -41,16 +41,4 @@ describe("POST /recommendations", () => {
     const response = await agent.post("/recommendations").send(body);
     expect(response.status).toBe(409);
   });
-
-  it("given already used youtube link, should return 409", async () => {
-    const body = generateNewRecommendationBody();
-    await prisma.recommendation.create({
-      data: {
-        name: "not used name",
-        youtubeLink: body.youtubeLink,
-      },
-    });
-    const response = await agent.post("/recommendations").send(body);
-    expect(response.status).toBe(409);
-  });
 });

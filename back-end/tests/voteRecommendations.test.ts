@@ -111,6 +111,6 @@ describe("POST /recommendations/:id/downvote", () => {
         id: recommendation.id,
       },
     });
-    expect(recommendationAfter).toBe(undefined);
+    expect(recommendationAfter).toBe(null);
   });
 });
