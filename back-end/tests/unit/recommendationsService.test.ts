@@ -140,3 +140,26 @@ describe("getTop", () => {
     expect(recommendationRepository.getAmountByScore).toHaveBeenCalled;
   });
 });
+
+describe("getById", () => {
+  it("should call recommendationRepository.find", async () => {
+    jest
+      .spyOn(recommendationRepository, "find")
+      .mockImplementationOnce((): any => {
+        return { name: "test" };
+      });
+    await recommendationService.getById(1);
+    expect(recommendationRepository.find).toHaveBeenCalled;
+  });
+
+  it("should throw an error if recommendation does not exist", async () => {
+    jest
+      .spyOn(recommendationRepository, "find")
+      .mockImplementationOnce((): any => null);
+
+    await expect(recommendationService.getById(1)).rejects.toEqual({
+      message: "",
+      type: "not_found",
+    });
+  });
+});
