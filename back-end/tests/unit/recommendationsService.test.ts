@@ -95,3 +95,24 @@ describe("downvote", () => {
     expect(recommendationRepository.remove).toHaveBeenCalled;
   });
 });
+
+describe("random", () => {
+  it("should call recommendationRepository.findAll once", async () => {
+    jest
+      .spyOn(recommendationRepository, "findAll")
+      .mockImplementationOnce((): any => [{ name: "test" }]);
+
+    await recommendationService.getRandom();
+    expect(recommendationRepository.findAll).toHaveBeenCalledTimes(1);
+  });
+  it("should throw an error if there are no recommendations", async () => {
+    jest
+      .spyOn(recommendationRepository, "findAll")
+      .mockImplementation((): any => []);
+
+    await expect(recommendationService.getRandom()).rejects.toEqual({
+      message: "",
+      type: "not_found",
+    });
+  });
+});
