@@ -85,7 +85,7 @@ describe("downvote", () => {
     jest
       .spyOn(recommendationRepository, "updateScore")
       .mockImplementationOnce((): any => {
-        return { score: -5 };
+        return { score: -6 };
       });
     jest
       .spyOn(recommendationRepository, "remove")
@@ -93,6 +93,23 @@ describe("downvote", () => {
 
     await recommendationService.downvote(1);
     expect(recommendationRepository.remove).toHaveBeenCalled;
+  });
+
+  it("should not remove recommendation if score is above -5", async () => {
+    jest
+      .spyOn(recommendationRepository, "find")
+      .mockImplementationOnce((): any => generateNewRecommendationBody());
+    jest
+      .spyOn(recommendationRepository, "updateScore")
+      .mockImplementationOnce((): any => {
+        return { score: -4 };
+      });
+    jest
+      .spyOn(recommendationRepository, "remove")
+      .mockImplementationOnce((): any => null);
+
+    await recommendationService.downvote(1);
+    expect(recommendationRepository.remove).not.toHaveBeenCalled;
   });
 });
 
