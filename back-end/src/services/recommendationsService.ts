@@ -1,6 +1,7 @@
 import { Recommendation } from "@prisma/client";
 import { recommendationRepository } from "../repositories/recommendationRepository.js";
 import { conflictError, notFoundError } from "../utils/errorUtils.js";
+import { generateNewRecommendationBody } from "../../tests/factories/recommendationsFactory.js";
 
 export type CreateRecommendationData = Omit<Recommendation, "id" | "score">;
 
@@ -82,6 +83,15 @@ function getScoreFilter(random: number) {
   return "lte";
 }
 
+async function resetDB() {
+  await recommendationRepository.resetDB();
+}
+
+async function seedDB() {
+  const recommendation = generateNewRecommendationBody();
+  await recommendationRepository.create(recommendation);
+}
+
 export const recommendationService = {
   insert,
   upvote,
@@ -90,4 +100,6 @@ export const recommendationService = {
   get,
   getById: getByIdOrFail,
   getTop,
+  resetDB,
+  seedDB,
 };
