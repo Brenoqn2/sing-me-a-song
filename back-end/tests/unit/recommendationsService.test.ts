@@ -115,6 +115,15 @@ describe("random", () => {
       type: "not_found",
     });
   });
+
+  it("should return a random recommendation", async () => {
+    jest
+      .spyOn(recommendationRepository, "findAll")
+      .mockImplementationOnce((): any => [{ name: "test" }]);
+
+    const recommendation = await recommendationService.getRandom();
+    expect(recommendation).toEqual({ name: "test" });
+  });
 });
 
 describe("get", () => {
