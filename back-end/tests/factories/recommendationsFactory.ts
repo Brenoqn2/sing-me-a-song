@@ -8,13 +8,13 @@ export function generateNewRecommendationBody() {
   };
 }
 
-export function createRecommendation() {
+export function createRecommendation(score: number = undefined) {
   const body = generateNewRecommendationBody();
   return prisma.recommendation.create({
     data: {
       name: body.name,
       youtubeLink: body.youtubeLink,
-      score: Math.floor(Math.random() * 10),
+      score: score || Math.floor(Math.random() * 10),
     },
   });
 }

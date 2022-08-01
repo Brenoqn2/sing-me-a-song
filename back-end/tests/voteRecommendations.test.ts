@@ -30,11 +30,6 @@ describe("POST /recommendations/:id/upvote", () => {
     expect(response.status).toBe(404);
   });
 
-  it("given not numeric id, should return 404", async () => {
-    const response = await agent.post(`/recommendations/a/upvote`);
-    expect(response.status).toBe(404);
-  });
-
   it("given valid id, should increase score by 1", async () => {
     const body = generateNewRecommendationBody();
     const recommendation = await prisma.recommendation.create({
@@ -71,11 +66,6 @@ describe("POST /recommendations/:id/downvote", () => {
 
   it("given invalid id, should return 404", async () => {
     const response = await agent.post(`/recommendations/-1/downvote`);
-    expect(response.status).toBe(404);
-  });
-
-  it("given not numeric id, should return 404", async () => {
-    const response = await agent.post(`/recommendations/a/downvote`);
     expect(response.status).toBe(404);
   });
 

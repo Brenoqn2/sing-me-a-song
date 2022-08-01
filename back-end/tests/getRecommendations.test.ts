@@ -2,6 +2,7 @@ import app from "../src/app";
 import supertest from "supertest";
 import { createRecommendation } from "./factories/recommendationsFactory";
 import { prisma } from "../src/database.js";
+import { jest } from "@jest/globals";
 
 const agent = supertest(app);
 
@@ -39,16 +40,43 @@ describe("GET /recommendations/:id", () => {
 });
 
 describe("GET /recommendations/random", () => {
-  it("should return random recommendation", async () => {
-    const recommendation = await createRecommendation();
+  it("should return 404 if there are no songs", async () => {
+    const response = await agent.get("/recommendations/random");
+    expect(response.status).toBe(404);
+  });
+
+  it("should return a recommendation with more than 10 votes 70% of the time", async () => {
+    jest.spyOn(global.Math, "random").mockImplementationOnce(() => 0.6);
+    const recommendation = await createRecommendation(11);
+    await createRecommendation(10);
     const response = await agent.get("/recommendations/random");
     expect(response.status).toBe(200);
     expect(response.body).toEqual(recommendation);
   });
 
-  it("should return 404 if there are no songs", async () => {
+  it("should return a recommendation with less than 10 votes 30% of the time", async () => {
+    jest.spyOn(global.Math, "random").mockImplementationOnce(() => 0.7);
+    const recommendation = await createRecommendation(1);
+    await createRecommendation(11);
     const response = await agent.get("/recommendations/random");
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(recommendation);
+  });
+
+  it("if there are no recommendations with more than 10 votes, should return a random recommendation 100%  of the time", async () => {
+    jest.spyOn(global.Math, "random").mockImplementationOnce(() => 0.6);
+    const recommendation = await createRecommendation(1);
+    const response = await agent.get("/recommendations/random");
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(recommendation);
+  });
+
+  it("if there are no recommendations with less than 10 votes, should return a random recommendation 100%  of the time", async () => {
+    jest.spyOn(global.Math, "random").mockImplementationOnce(() => 0.7);
+    const recommendation = await createRecommendation(11);
+    const response = await agent.get("/recommendations/random");
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(recommendation);
   });
 });
 
