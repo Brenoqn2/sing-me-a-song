@@ -128,3 +128,15 @@ describe("get", () => {
     expect(recommendationRepository.findAll).toHaveBeenCalled;
   });
 });
+
+describe("getTop", () => {
+  it("should call recommendationRepository.getAmountByScore", async () => {
+    jest
+      .spyOn(recommendationRepository, "getAmountByScore")
+      .mockImplementationOnce((): any => {
+        return [];
+      });
+    await recommendationService.getTop(2);
+    expect(recommendationRepository.getAmountByScore).toHaveBeenCalled;
+  });
+});
