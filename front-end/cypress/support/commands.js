@@ -1,7 +1,9 @@
+console.log(Cypress.config());
+
 Cypress.Commands.add("resetDB", () => {
-  cy.request("POST", `${process.env.REACT_APP_API_BASE_URL}/resetDB`);
+  cy.request("POST", `/reset-database`);
 });
 
 Cypress.Commands.add("seedDB", () => {
-  cy.request("POST", `${process.env.REACT_APP_API_BASE_URL}/seedDB`);
+  cy.request("POST", `/seed-database`);
 });
