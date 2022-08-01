@@ -116,3 +116,15 @@ describe("random", () => {
     });
   });
 });
+
+describe("get", () => {
+  it("should call recommendationsRepository.findAll", async () => {
+    jest
+      .spyOn(recommendationRepository, "findAll")
+      .mockImplementationOnce((): any => {
+        return [];
+      });
+    await recommendationService.get();
+    expect(recommendationRepository.findAll).toHaveBeenCalled;
+  });
+});
